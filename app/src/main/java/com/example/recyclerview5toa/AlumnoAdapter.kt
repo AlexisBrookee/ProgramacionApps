@@ -4,37 +4,48 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.recyclerview5toa.R
+// CORRECCIÓN: Usar ItemPersonasBinding para item_personas.xml
+import com.example.recyclerview5toa.databinding.ItemPersonasBinding
 
-class AlumnoAdapter (private val context: Context, private val listAlumnos: List<Alumno>) : RecyclerView.Adapter<AlumnoAdapter.ViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlumnoAdapter.ViewHolder {
-        // inflates the item_persona view that is used to hold list item
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_personas, parent, false)
-        return ViewHolder(view)
+class AlumnoAdapter(
+    private val context: Context,
+    private val listAlumnos: List<Alumno>,
+    private var optionsMenuClickListener: OptionsMenuClickListener
+) : RecyclerView.Adapter<AlumnoAdapter.ViewHolder>() {
+
+    interface OptionsMenuClickListener {
+        fun onOptionsMenuClicked(position: Int)
+    }
+
+    // CORRECCIÓN: Usar ItemPersonasBinding
+    inner class ViewHolder(val binding: ItemPersonasBinding) : RecyclerView.ViewHolder(binding.root)
+
+    // CORRECCIÓN: Usar ItemPersonasBinding para inflar
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ItemPersonasBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val ItemsViewModel = listAlumnos[position]
+        with(holder) {
+            with(listAlumnos[position]) {
+                // El layout usa imgAlumno
+                Glide.with(context).load(this.imagen).into(binding.imgAlumno)
 
-        // sets the image to the imageview from our itemHolder class
-        Glide.with(context).load(ItemsViewModel.imagen).into(holder.imgFoto)
+                binding.nombre.text = this.nombre
+                binding.cuenta.text = this.cuenta
 
-        // sets the text to the textview from our itemHolder class
-        holder.nombre.text = ItemsViewModel.nombre
-        holder.numCuenta.text = ItemsViewModel.cuenta
+                binding.textViewOptions.setOnClickListener {
+                    optionsMenuClickListener.onOptionsMenuClicked(position)
+                }
+            }
+        }
     }
 
     override fun getItemCount(): Int {
         return listAlumnos.size
-    }
-
-    inner class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val imgFoto: ImageView = itemView.findViewById(R.id.imgPersona)
-        val nombre: TextView = itemView.findViewById(R.id.tvNombre)
-        val numCuenta: TextView = itemView.findViewById(R.id.tvCuenta)
     }
 }

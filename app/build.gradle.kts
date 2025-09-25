@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    // El plugin KSP YA NO VA AQUÍ
 }
 
 android {
@@ -15,6 +16,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    // ⭐ Mantenemos ViewBinding, ya que lo necesitas para el menú y el botón ⭐
+    buildFeatures {
+        viewBinding = true
     }
 
     buildTypes {
@@ -36,7 +42,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -46,6 +51,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    // Add the Glide dependency here
     implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    // ⭐ DEPENDENCIAS DE ROOM YA NO VAN AQUÍ ⭐
 }
